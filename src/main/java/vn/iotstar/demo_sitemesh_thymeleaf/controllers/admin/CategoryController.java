@@ -1,6 +1,10 @@
 package vn.iotstar.demo_sitemesh_thymeleaf.controllers.admin;
 
-import jakarta.validation.Valid;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,22 +16,23 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import jakarta.validation.Valid;
 import vn.iotstar.demo_sitemesh_thymeleaf.entity.Category;
 import vn.iotstar.demo_sitemesh_thymeleaf.models.CategoryModel;
 import vn.iotstar.demo_sitemesh_thymeleaf.services.CategoryService;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Controller
 @RequestMapping("/admin/categories")
 public class CategoryController {
     private CategoryService categoryService;
-    
+
     @GetMapping
     public String listCategories(ModelMap model) {
         return search(model, null, Optional.of(1), Optional.of(3)); // Adjust page size as needed
@@ -35,8 +40,8 @@ public class CategoryController {
     @Autowired
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
-        
-    
+
+
     }
     @GetMapping("/add")
     public String add(Model model) {
@@ -55,7 +60,7 @@ public class CategoryController {
         BeanUtils.copyProperties(categoryModel, entity);
         categoryService.save(entity);
         String message="";
-        if(categoryModel.getIsEdit() == true) {
+        if(categoryModel.getIsEdit()) {
             message="Category is Edited!!!";
         }else{
             message="Category is Saved!!!";
@@ -106,8 +111,11 @@ public class CategoryController {
             int start = Math.max(1, currentPage-2);
             int end = Math.min(currentPage + 2, totalPages);
             if(totalPages > count) {
-                if(end == totalPages) start = end - count;
-                else if (start == 1) end = start + count;
+                if(end == totalPages) {
+					start = end - count;
+				} else if (start == 1) {
+					end = start + count;
+				}
             }
             List<Integer> pageNumbers = IntStream.rangeClosed(start, end)
                     .boxed()

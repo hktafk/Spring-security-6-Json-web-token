@@ -1,12 +1,12 @@
 package vn.iotstar.demo_sitemesh_thymeleaf.models;
 
+import java.io.Serializable;
+
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
 
 @AllArgsConstructor
 @NoArgsConstructor
