@@ -5,21 +5,34 @@ import org.springframework.context.annotation.Configuration;
 @Configuration 
 @EnableWebSecurity
 public class SecurityConfig {
-	@Bean
+	@Autowired
+	UserInfoRepository repository;
 	// authentication
-	public UserDetailsService userDetailsService (PasswordEncoder encoder) {
-		UserDetails admin = User.withUsername("trung")
-	}
-			.password (encoder.encode("123"))
-			.roles ("ADMIN")
-			.build();
-		UserDetails user = User.withUsername("user")
-			.password (encoder.encode("123"))
-			.roles ("USER")
-			.build();
-	return new InMemoryUserDetails Manager (admin, user);
-}
 	@Bean
-	PasswordEncoder passwordEncoder() { 
-		return new BCryptPasswordEncoder();
+	UserDetailsService userDetailsService() {
+	}
+	return new UserInfoService (repository);
+	@Bean
+	PasswordEncoder passwordEncoder() {
+	}
+	@Bean
+	return new BCryptPasswordEncoder();
+	AuthenticationProvider authenticationProvider(){
+	DaoAuthenticationProvider authenticationProvider=new
+	DaoAuthenticationProvider();
+	}
+	authenticationProvider.setUserDetailsService (userDetailsService()); authenticationProvider.setPasswordEncoder (passwordEncoder());
+	return authenticationProvider;
+	//security 6.1+
+	@Bean
+	SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
+	return http.csrf(csrf -> csrf.disable())
+	.authorizeHttpRequests (auth -> auth
+	.requestMatchers("/user/new"). permitAll()
+	.requestMatchers ("/").permitAll()
+	.requestMatchers("/customer/**").authenticated()
+	//.anyRequest().authenticated()
+	.formLogin(Customizer.withDefaults())
+	.build();
+	}
 }

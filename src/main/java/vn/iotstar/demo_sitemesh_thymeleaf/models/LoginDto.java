@@ -1,0 +1,9 @@
+package vn.iotstar.demo_sitemesh_thymeleaf.models;
+
+import lombok.Data;
+
+@Data
+public class LoginDto {
+	private String usernameOrEmail;
+	private String password;
+}
